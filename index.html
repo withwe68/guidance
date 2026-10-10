@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102552">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="꾸르실료 길잡이">
+<title>꾸르실료 길잡이</title>
+<link rel="icon" href="images/logo.png">
+<link rel="apple-touch-icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b3a7a; --navy-deep:#0f2350; --red:#c41e2e; --gold:#c9a24a;
+  --paper:#faf7f0; --card:#ffffff; --ink:#23201b; --muted:#6f685c; --line:#e7e0d1;
+  --chip:#efe9dc; --accent:var(--navy); --rubric:#b3261e;
+  --fs:19px;
+  --serif:"Noto Serif KR","Nanum Myeongjo","AppleMyungjo",serif;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#11161f; --card:#19202c; --ink:#ebe6db; --muted:#9aa2b2; --line:#2a3242;
+    --chip:#232c3b; --accent:#9db7ff; --rubric:#ff8a80;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11161f; --card:#19202c; --ink:#ebe6db; --muted:#9aa2b2; --line:#2a3242;
+  --chip:#232c3b; --accent:#9db7ff; --rubric:#ff8a80;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+/* ---------- 표지 ---------- */
+#cover{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 24px calc(32px + env(safe-area-inset-bottom));text-align:center;color:#fff;
+  background:radial-gradient(120% 70% at 50% 18%,#2a4f9c 0%,#16306a 45%,#0b1a3d 100%);position:relative;overflow:hidden}
+#cover::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 2px,transparent 2px 22px)}
+.logo-wrap{position:relative;display:grid;place-items:center}
+.logo-wrap::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(120,160,255,.28) 0%,rgba(120,160,255,.08) 45%,transparent 70%);pointer-events:none}
+.logo-wrap img{position:relative;width:min(230px,62vw);height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.45))}
+.cover-kicker{margin:34px 0 4px;font-family:var(--serif);font-size:19px;letter-spacing:.12em;color:#dfe7ff}
+.cover-title{margin:0;font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.25;letter-spacing:.02em}
+.cover-title span{display:block;font-size:24px;font-weight:600;letter-spacing:.3em;margin-top:6px;color:var(--gold)}
+.cover-rule{width:56px;height:2px;background:var(--gold);margin:22px auto;opacity:.8}
+.cover-date{font-size:15px;color:#c8d3f0;margin:0}
+.cover-btn{margin-top:30px;padding:15px 34px;border-radius:999px;background:#fff;color:var(--navy-deep);
+  font-weight:700;font-size:17px;box-shadow:0 8px 22px rgba(0,0,0,.3)}
+.cover-btn:active{transform:scale(.97)}
+.cover-foot{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;font-size:12.5px;color:#9fb0d8;letter-spacing:.05em}
+
+/* ---------- 공통 상단바 ---------- */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:6px;
+  padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:var(--navy-deep);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.topbar h1{flex:1;margin:0;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .sub{font-size:12px;font-weight:400;color:#b9c6e6;margin-left:6px}
+.icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none}
+.icon-btn:active{background:rgba(255,255,255,.12)}
+.icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn.on{background:rgba(255,255,255,.18)}
+.txt-btn{height:36px;min-width:36px;padding:0 8px;border-radius:9px;font-weight:700;font-size:15px}
+.txt-btn:active{background:rgba(255,255,255,.12)}
+
+/* ---------- 목차 ---------- */
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
+.today-card{display:flex;gap:14px;align-items:center;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,#1b3a7a,#0f2350);color:#fff;margin-bottom:22px}
+.today-card img{width:54px;height:54px;background:#fff;border-radius:50%;padding:6px;flex:none}
+.today-card b{display:block;font-size:16px}
+.today-card small{color:#c8d3f0;font-size:13.5px}
+.sec-title{display:flex;align-items:center;gap:8px;margin:24px 4px 10px;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.list{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:15px 16px;text-align:left;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row:active{background:var(--chip)}
+.row .t{flex:1;font-size:16.5px;font-weight:500}
+.row .pg{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.row .chev{color:var(--muted);font-size:18px}
+.row .ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--chip);color:var(--accent);font-size:15px;flex:none;font-family:var(--serif);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13.5px;color:var(--muted);padding:4px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+
+/* ---------- 읽기 화면 ---------- */
+.reader{max-width:720px;margin:0 auto;padding:6px 18px calc(56px + env(safe-area-inset-bottom));font-family:var(--serif);font-size:var(--fs)}
+.r-head{text-align:center;padding:22px 0 10px}
+.r-head h2{margin:0;font-size:1.45em;font-weight:700;line-height:1.35}
+.r-head .meta{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:6px}
+.toc{position:sticky;top:calc(56px + env(safe-area-inset-top));z-index:10;display:flex;gap:6px;overflow-x:auto;
+  padding:10px 2px;margin:0 -18px;padding-left:18px;padding-right:18px;background:var(--paper);scrollbar-width:none;font-family:var(--sans)}
+.toc::-webkit-scrollbar{display:none}
+.toc button{flex:none;padding:6px 12px;border-radius:999px;background:var(--chip);font-size:13.5px;white-space:nowrap}
+.blk{margin:0 0 .85em}
+.h{margin:1.6em 0 .7em;font-size:1.08em;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px;scroll-margin-top:120px}
+.h::before{content:"";width:4px;height:1.05em;background:var(--red);border-radius:2px}
+.rubric{font-family:var(--sans);font-size:.78em;color:var(--rubric);font-weight:500}
+.rubric::before{content:"〈"} .rubric::after{content:"〉"}
+.note{font-family:var(--sans);font-size:.8em;color:var(--muted)}
+.quote{border-left:3px solid var(--gold);padding:.3em 0 .3em .9em;font-style:italic;color:var(--muted);font-size:.95em}
+.line{display:flex;gap:.55em;align-items:flex-start}
+.line .who{flex:none;width:1.45em;text-align:center;font-weight:700;line-height:inherit}
+.line .tx{flex:1;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere}
+.who-L{color:var(--red)} .who-A{color:var(--accent)} .who-1,.who-2{color:var(--muted)}
+.line.r-A .tx{font-weight:600}
+.line.r-null .tx{padding-left:0}
+.cp-chips{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--sans)}
+.cp-chip{padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.76em;color:var(--muted)}
+.cp-chip::after{content:" ▾";font-size:.85em}
+.cp-chip.open{color:var(--accent);border-color:var(--accent)}
+.cp-body{margin:.5em 0 0;padding:.75em .9em;border-radius:10px;background:var(--chip);font-size:.92em;line-height:1.7}
+.cp-body b{display:block;font-family:var(--sans);font-size:.8em;color:var(--accent);margin-bottom:.2em}
+.weekly{margin:1.1em 0;padding:1em 1.05em;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.weekly .days{display:flex;gap:4px;margin-bottom:.7em;font-family:var(--sans)}
+.weekly .days button{flex:1;padding:6px 0;border-radius:8px;font-size:13.5px;background:var(--chip)}
+.weekly .days button.sel{background:var(--navy);color:#fff}
+.weekly .ref{font-family:var(--sans);font-size:.78em;color:var(--red);font-weight:700;margin-bottom:.35em}
+.weekly .wt{line-height:1.8;word-break:keep-all}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1em 1.05em;margin:0 0 1em}
+.mys{display:flex;gap:.7em;align-items:baseline}
+.mys .n{flex:none;font-family:var(--sans);font-size:.72em;font-weight:700;color:#fff;background:var(--navy);border-radius:6px;padding:2px 7px}
+.today-badge{font-family:var(--sans);font-size:.62em;background:var(--red);color:#fff;border-radius:6px;padding:2px 7px;font-weight:700}
+.guide{margin:0 0 1.2em;border:1px dashed var(--line);border-radius:14px;overflow:hidden}
+.guide summary{list-style:none;padding:.8em 1em;font-family:var(--sans);font-size:.82em;font-weight:700;color:var(--accent);cursor:pointer}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary::after{content:" ▾"}
+.guide ol{margin:0;padding:0 1.2em 1em 2.4em;font-size:.9em;line-height:1.8}
+.guide .src{font-family:var(--sans);font-size:.7em;color:var(--muted);padding:0 1.2em 1em}
+.st-nav{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 1.2em;font-family:var(--sans)}
+.st-nav button{width:2.3em;height:2.3em;border-radius:8px;background:var(--chip);font-size:13px;font-weight:700}
+.station{scroll-margin-top:80px}
+.station .st-head{display:flex;gap:.6em;align-items:flex-start;margin:.2em 0 .8em}
+.station .st-no{flex:none;font-family:var(--sans);font-weight:700;font-size:.72em;color:#fff;background:var(--red);border-radius:8px;padding:.35em .6em;margin-top:.15em}
+.station .st-title{font-weight:700;line-height:1.45}
+.link-step{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:1px 9px;border-radius:999px;background:var(--chip);
+  font-family:var(--sans);font-size:.7em;color:var(--accent);font-weight:700;vertical-align:middle}
+.steps{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:1em}
+.step{display:flex;gap:.7em;align-items:flex-start;padding:.7em .9em;border-top:1px solid var(--line);font-size:.92em;line-height:1.55;word-break:keep-all}
+.step:first-child{border-top:0}
+.step .sn{flex:none;width:1.75em;height:1.75em;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--sans);font-size:.72em;font-weight:700;margin-top:.1em}
+.weekly{scroll-margin-top:130px}
+.end-mark{text-align:center;color:var(--gold);margin:2.2em 0 0;font-size:1.2em;letter-spacing:.6em}
+.pager{display:flex;gap:10px;margin-top:22px;font-family:var(--sans)}
+.pager button{flex:1;padding:13px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;text-align:left}
+.pager button.next{text-align:right}
+.pager small{display:block;color:var(--muted);font-size:12px}
+
+/* ---------- 성가 ---------- */
+.song-sheet{background:#fff;border-radius:12px;border:1px solid var(--line);overflow:hidden;margin:12px 0}
+.song-sheet img{display:block;width:100%;height:auto}
+.song-sheet .err{padding:30px 16px;text-align:center;color:#6f685c;font-size:14px}
+audio{width:100%;margin:8px 0 4px}
+.song-src{font-family:var(--sans);font-size:12.5px;color:var(--muted);text-align:center}
+
+/* ---------- 토스트 ---------- */
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  background:rgba(20,26,40,.92);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;z-index:99;
+  opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+@media (min-width:600px){ .cover-title{font-size:46px} }
+</style>
+</head>
+<body>
+
+<!-- 표지 -->
+<section id="cover">
+  <div class="logo-wrap"><img src="images/logo.png" alt="꾸르실료 로고"></div>
+  <p class="cover-kicker">그리스도인 생활의</p>
+  <h1 class="cover-title">꾸르실료<span>길 잡 이</span></h1>
+  <div class="cover-rule"></div>
+  <p class="cover-date" id="coverDate"></p>
+  <button class="cover-btn" onclick="go('#/menu')">길잡이 펼치기 →</button>
+  <div class="cover-foot">연희동 남성울뜨레야 · DE COLORES</div>
+</section>
+
+<!-- 앱 화면 -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <button class="icon-btn" id="btnBack" aria-label="뒤로"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <h1 id="barTitle">길잡이</h1>
+    <button class="txt-btn" id="btnSmaller" aria-label="글자 작게">가<sup style="font-size:9px">−</sup></button>
+    <button class="txt-btn" id="btnBigger" aria-label="글자 크게" style="font-size:18px">가<sup style="font-size:9px">+</sup></button>
+    <button class="icon-btn" id="btnTheme" aria-label="화면 밝기"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="icon-btn" id="btnWake" aria-label="화면 꺼짐 방지"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></button>
+  </header>
+  <main id="view"></main>
+</div>
+<div id="toast"></div>
+
+<script src="data/guide-data.js"></script>
+<script>
+(function(){
+"use strict";
+const D = window.GUIDE_DATA;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DAYS = ["일","월","화","수","목","금","토"];
+const ROLE_MARK = {L:"十", A:"◎", "1":"○", "2":"●"};
+const ICON = {"기도":"✚","묵상·십자가의 길":"✝","사도의 시간·성찰":"♔","회합":"◎","순례기도·연도":"⛪"};
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem("gj_"+k); return v===null? d : JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem("gj_"+k, JSON.stringify(v)); }catch(e){} }
+};
+const itemById = id => D.items.find(i => i.id === id);
+const cpByTitle = t => D.commonPrayers.find(p => p.title === t);
+let today = new Date();
+
+/* ---- 설정: 글자크기 · 테마 · 화면꺼짐방지 ---- */
+const SIZES = [16,17,19,21,24,27];
+let sizeIdx = store.get("size", 2);
+function applySize(){ document.documentElement.style.setProperty("--fs", SIZES[sizeIdx]+"px"); store.set("size", sizeIdx); }
+$("#btnSmaller").onclick = () => { if(sizeIdx>0){sizeIdx--;applySize();toast("글자 크기 "+(sizeIdx+1)+"/"+SIZES.length);} };
+$("#btnBigger").onclick  = () => { if(sizeIdx<SIZES.length-1){sizeIdx++;applySize();toast("글자 크기 "+(sizeIdx+1)+"/"+SIZES.length);} };
+applySize();
+
+let theme = store.get("theme", "auto");
+function applyTheme(){ if(theme==="auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", theme); store.set("theme", theme); }
+$("#btnTheme").onclick = () => {
+  const dark = theme==="dark" || (theme==="auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+  theme = dark ? "light" : "dark"; applyTheme(); toast(dark ? "밝은 화면" : "어두운 화면");
+};
+applyTheme();
+
+let wakeLock = null;
+$("#btnWake").onclick = async () => {
+  if(!("wakeLock" in navigator)){ toast("이 기기는 화면 꺼짐 방지를 지원하지 않아요"); return; }
+  try{
+    if(wakeLock){ await wakeLock.release(); wakeLock=null; $("#btnWake").classList.remove("on"); toast("화면 꺼짐 방지 해제"); }
+    else{ wakeLock = await navigator.wakeLock.request("screen"); $("#btnWake").classList.add("on"); toast("화면이 꺼지지 않아요");
+      wakeLock.addEventListener("release", () => { wakeLock=null; $("#btnWake").classList.remove("on"); }); }
+  }catch(e){ toast("화면 꺼짐 방지를 켤 수 없어요"); }
+};
+document.addEventListener("visibilitychange", async () => {
+  if(document.visibilityState==="visible" && $("#btnWake").classList.contains("on") && !wakeLock){
+    try{ wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
+  }
+});
+
+let toastT;
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1500); }
+
+/* ---- 라우팅 ---- */
+function go(h){ location.hash = h; }
+window.go = go;
+$("#btnBack").onclick = () => { if(history.length>1 && location.hash!=="#/menu") history.back(); else go("#/"); };
+
+function route(){
+  const h = location.hash || "#/";
+  const [ , page, id] = h.split("/");
+  if(!page){ $("#cover").classList.remove("hidden"); $("#app").classList.add("hidden"); window.scrollTo(0,0); return; }
+  $("#cover").classList.add("hidden"); $("#app").classList.remove("hidden");
+  if(page==="menu") renderMenu();
+  else if(page==="p" && itemById(id)) renderItem(itemById(id));
+  else if(page==="song") renderSong(D.songs.find(s=>s.id===id));
+  else renderMenu();
+  if(!(page==="menu" && store.get("menuScroll",0))) window.scrollTo(0,0);
+}
+window.addEventListener("hashchange", route);
+
+/* ---- 표지 날짜 ---- */
+function showDate(){
+  $("#coverDate").textContent = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일 ${DAYS[today.getDay()]}요일`;
+}
+// 앱을 켜 둔 채 자정이 지나거나, 다음 날 다시 열었을 때 날짜·요일 독서·오늘의 신비를 새로 고침
+function refreshDay(){
+  const now = new Date();
+  if(now.toDateString() !== today.toDateString()){ today = now; showDate(); route(); }
+}
+setInterval(refreshDay, 60*1000);
+document.addEventListener("visibilitychange", () => { if(document.visibilityState==="visible") refreshDay(); });
+window.addEventListener("pageshow", refreshDay);
+showDate();
+
+/* ---- 목차 ---- */
+function renderMenu(){
+  $("#barTitle").innerHTML = "꾸르실료 길잡이";
+  const reading = D.weeklyReadings[today.getDay()];
+  let html = `<div class="wrap">
+    <button class="today-card" style="width:100%;text-align:left" onclick="go('#/p/morning')">
+      <img src="images/logo.png" alt="">
+      <div><b>오늘의 아침기도</b><small>${DAYS[today.getDay()]}요일 독서 · ${esc(reading.ref)}</small></div>
+    </button>`;
+  for(const cat of D.categories){
+    html += `<div class="sec-title">${esc(cat)}</div><div class="list">`;
+    for(const it of D.items.filter(i=>i.category===cat)){
+      html += `<button class="row" onclick="go('#/p/${it.id}')"><span class="ico">${ICON[cat]||"✚"}</span>
+        <span class="t">${esc(it.title)}</span>${it.page?`<span class="pg">${it.page}쪽</span>`:""}<span class="chev">›</span></button>`;
+    }
+    html += `</div>`;
+  }
+  html += `<div class="sec-title">노래모음</div><div class="list">`;
+  for(const s of D.songs){
+    html += `<button class="row" onclick="go('#/song/${s.id}')"><span class="ico">♪</span>
+      <span class="t">${esc(s.title)}</span><span class="pg">${s.page}쪽</span><span class="chev">›</span></button>`;
+  }
+  html += `</div><div class="sec-title">바로가기</div><div class="list">`;
+  for(const l of D.links){
+    const ext = /^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : "";
+    html += `<a class="row" href="${esc(l.url)}"${ext}><span class="ico">↗</span><span class="t">${esc(l.title)}</span><span class="chev">›</span></a>`;
+  }
+  html += `</div><div class="sec-title">기도문 기호</div>
+    <div class="legend"><span><b class="who-L">十</b> 주례·선창</span><span><b class="who-A">◎</b> 다같이</span>
+    <span><b class="who-1">○</b> 왼편(1그룹)</span><span><b class="who-2">●</b> 오른편(2그룹)</span></div>
+    <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:28px">자료 출처 · 광주대교구 꾸르실료사무국 모바일 길잡이</p></div>`;
+  $("#view").innerHTML = html;
+}
+
+/* ---- 블록 렌더 ---- */
+function noteHtml(text){
+  // "(주님의 기도, 성모송, 영광송)" 같은 안내는 공통기도 칩으로 바꿔 탭하면 펼쳐지게
+  const parts = text.replace(/\(.*?\)/g,"").split(/,\s*/).map(s=>s.trim()).filter(Boolean);
+  if(parts.length && parts.every(p=>cpByTitle(p))){
+    const extra = (text.match(/\(.*?\)/)||[""])[0];
+    return `<div class="blk cp-chips">${parts.map(p=>`<button class="cp-chip" data-cp="${esc(p)}">${esc(p)}</button>`).join("")}${extra?`<span class="note">${esc(extra)}</span>`:""}</div>`;
+  }
+  return `<div class="blk note">(${esc(text)})</div>`;
+}
+function lineHtml(role, text){
+  const r = role || "null";
+  // 문장 끝 "(세 번)" 같은 괄호는 작게
+  const t = esc(text).replace(/\((세 번|3번)\)/g, '<span class="note">($1)</span>');
+  return `<div class="blk line r-${r}"><span class="who who-${r}">${role?ROLE_MARK[role]:""}</span><span class="tx">${t}</span></div>`;
+}
+const ULTREYA_LINKS = [
+  [/시작성가/, "#/song/cursillista", "성가"], [/시작기도/, "#/p/open-close", "기도"],
+  [/팀 회합/, "#/p/team", "순서"], [/영적독서|묵상/, "#/p/meditation", "묵상"],
+  [/마침기도/, "#/p/open-close", "기도"], [/마침성가/, "#/song/de-colores", "성가"]
+];
+function weeklyHtml(sel){
+  const w = D.weeklyReadings[sel];
+  return `<div class="weekly" id="weekly"><div class="days">${DAYS.map((d,i)=>`<button data-day="${i}" class="${i===sel?"sel":""}">${d}${i===today.getDay()?"·":""}</button>`).join("")}</div>
+    <div class="ref">${esc(w.day)} 독서 · ${esc(w.ref)}</div><div class="wt">${esc(w.text)}</div></div>`;
+}
+function stationHtml(b){
+  return `<div class="card station" id="st-${b.no}">
+    ${lineHtml("A","어머니께 청하오니\n제 맘속에 주님 상처 깊이 새겨주소서.")}
+    <div class="st-head"><span class="st-no">제${b.no}처</span><span class="st-title">${esc(b.title)}</span></div>
+    ${lineHtml("L","주님께서는 십자가로 온 세상을 구원하셨나이다.")}
+    <div class="blk line r-A"><span class="who who-A">◎</span><span class="tx">예수 그리스도님, <span class="rubric">깊은 절을 하며</span>\n경배하며 찬송하나이다.</span></div>
+    ${b.rubric?`<div class="blk rubric">${esc(b.rubric)}</div>`:""}
+    ${lineHtml(null,"사랑하는 예수님,\n"+b.prayer)}
+    <div class="blk rubric">잠깐 묵상한다.</div>
+    ${noteHtml("주님의 기도, 성모송, 영광송")}
+  </div>`;
+}
+const rosaryToday = () => ["영광","환희","고통","영광","빛","고통","환희"][today.getDay()];
+
+function renderItem(it){
+  $("#barTitle").innerHTML = esc(it.title);
+  const heads = it.blocks.filter(b=>b.type==="heading");
+  const stations = it.blocks.filter(b=>b.type==="station");
+  let h = `<article class="reader"><div class="r-head"><h2>${esc(it.title)}</h2>
+    <div class="meta">${esc(it.category)}${it.page?` · 길잡이 ${it.page}쪽`:""}</div></div>`;
+  if(heads.length>=3 && !stations.length){
+    h += `<nav class="toc">${heads.map((b,i)=>`<button data-jump="h${i}">${esc(b.text.replace(/\s*\(.*\)$/,""))}</button>`).join("")}</nav>`;
+  }
+  if(it.id==="rosary"){
+    h += `<details class="guide"><summary>묵주기도 바치는 순서 보기</summary><ol>
+      <li>성호경</li><li>사도신경</li><li>주님의 기도</li><li>성모송 3번</li><li>영광송</li>
+      <li>각 단마다: 신비 묵상 → 주님의 기도 → 성모송 10번 → 영광송 → 구원을 비는 기도</li>
+      <li>5단을 마친 뒤 마침기도</li></ol>
+      <div class="src">※ 사이트에는 시작 응송과 신비 제목만 있어 일반적인 순서를 보충했습니다. 길잡이 책자와 대조해 주세요.</div>
+      <div class="src">${["성호경","사도신경","주님의 기도","성모송","영광송","구원을 비는 기도"].map(p=>`<button class="cp-chip" data-cp="${p}">${p}</button>`).join(" ")}</div></details>`;
+  }
+  if(stations.length){
+    h += `<div class="st-nav">${stations.map(s=>`<button data-st="${s.no}">${s.no}</button>`).join("")}</div>`;
+  }
+  let hi = 0;
+  for(const b of it.blocks){
+    switch(b.type){
+      case "heading": {
+        const isToday = it.id==="rosary" && b.text.startsWith(rosaryToday());
+        h += `<h3 class="h" id="h${hi++}">${esc(b.text)}${isToday?' <span class="today-badge">오늘</span>':""}</h3>`; break;
+      }
+      case "rubric": h += `<div class="blk rubric">${esc(b.text)}</div>`; break;
+      case "note":   h += noteHtml(b.text); break;
+      case "quote":  h += `<div class="blk quote">${esc(b.text)}</div>`; break;
+      case "weekly": h += weeklyHtml(today.getDay()); break;
+      case "mystery":h += `<div class="blk mys"><span class="n">${esc(b.label)}</span><span>${esc(b.text)}</span></div>`; break;
+      case "station":h += stationHtml(b); break;
+      case "line": {
+        if(it.id==="ultreya" && !b.role){
+          h += `<div class="steps">` + b.text.split("\n").map(ln => {
+            const mm = ln.match(/^(\d+)\.\s*(.*)$/); const body = mm ? mm[2] : ln;
+            const m = ULTREYA_LINKS.find(([re]) => re.test(body));
+            return `<div class="step"><span class="sn">${mm?mm[1]:"·"}</span><span class="tx">${esc(body)}${m?`<a class="link-step" href="${m[1]}">${m[2]} ›</a>`:""}</span></div>`;
+          }).join("") + `</div>`;
+        } else h += lineHtml(b.role, b.text);
+        break;
+      }
+    }
+  }
+  h += `<div class="end-mark">✚</div>`;
+  // 같은 분류 안에서 이전/다음
+  const all = D.items, idx = all.indexOf(it);
+  const prev = all[idx-1], next = all[idx+1];
+  h += `<div class="pager">${prev?`<button onclick="go('#/p/${prev.id}')"><small>‹ 이전</small>${esc(prev.title)}</button>`:"<span style='flex:1'></span>"}
+        ${next?`<button class="next" onclick="go('#/p/${next.id}')"><small>다음 ›</small>${esc(next.title)}</button>`:"<span style='flex:1'></span>"}</div>`;
+  h += `<div style="text-align:center;margin-top:18px;font-family:var(--sans);font-size:12px"><a href="${esc(it.source)}" target="_blank" rel="noopener" style="color:var(--muted)">원문 보기 ↗</a></div></article>`;
+  $("#view").innerHTML = h;
+}
+
+function renderSong(s){
+  if(!s){ renderMenu(); return; }
+  $("#barTitle").innerHTML = esc(s.title);
+  $("#view").innerHTML = `<article class="reader"><div class="r-head"><h2>${esc(s.title)}</h2>
+    <div class="meta">노래모음 · 길잡이 ${s.page}쪽${s.use?` · ${esc(s.use)}`:""}</div></div>
+    <audio controls preload="none" src="${esc(s.audio)}">이 기기에서는 음원을 재생할 수 없어요.</audio>
+    <div class="song-sheet"><img src="${esc(s.sheet)}" alt="${esc(s.title)} 악보" loading="lazy"
+      onerror="this.outerHTML='<div class=&quot;err&quot;>악보 이미지를 불러오지 못했어요.<br>인터넷 연결을 확인해 주세요.</div>'"></div>
+    <p class="song-src">악보·음원 제공: 광주대교구 꾸르실료사무국 · 악보를 두 손가락으로 확대해 보세요</p></article>`;
+}
+
+/* ---- 화면 안 클릭 처리 ---- */
+$("#view").addEventListener("click", e => {
+  const cp = e.target.closest("[data-cp]");
+  if(cp){
+    const next = cp.parentElement.nextElementSibling;
+    if(next && next.classList.contains("cp-body") && next.dataset.for===cp.dataset.cp){ next.remove(); cp.classList.remove("open"); return; }
+    if(next && next.classList.contains("cp-body")) { next.remove(); cp.parentElement.querySelectorAll(".open").forEach(x=>x.classList.remove("open")); }
+    const p = cpByTitle(cp.dataset.cp);
+    const div = document.createElement("div");
+    div.className = "cp-body"; div.dataset.for = p.title;
+    div.innerHTML = `<b>${esc(p.title)}</b>${esc(p.text)}`;
+    cp.parentElement.after(div); cp.classList.add("open"); return;
+  }
+  const day = e.target.closest("[data-day]");
+  if(day){ $("#weekly").outerHTML = weeklyHtml(+day.dataset.day); return; }
+  const j = e.target.closest("[data-jump]");
+  if(j){ document.getElementById(j.dataset.jump).scrollIntoView({behavior:"smooth"}); return; }
+  const st = e.target.closest("[data-st]");
+  if(st){ document.getElementById("st-"+st.dataset.st).scrollIntoView({behavior:"smooth"}); }
+});
+
+route();
+})();
+</script>
+</body>
+</html>
