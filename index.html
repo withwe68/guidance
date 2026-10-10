@@ -33,6 +33,8 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a{touch-action:manipulation}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
@@ -113,7 +115,7 @@ a{color:inherit;text-decoration:none}
 .line.r-A .tx{font-weight:600}
 .line.r-null .tx{padding-left:0}
 .cp-chips{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--sans)}
-.cp-chip{padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.76em;color:var(--muted)}
+.cp-chip{min-height:34px;padding:5px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.76em;color:var(--muted)}
 .cp-chip::after{content:" ▾";font-size:.85em}
 .cp-chip.open{color:var(--accent);border-color:var(--accent)}
 .cp-body{margin:.5em 0 0;padding:.75em .9em;border-radius:10px;background:var(--chip);font-size:.92em;line-height:1.7}
@@ -140,7 +142,7 @@ a{color:inherit;text-decoration:none}
 .station .st-head{display:flex;gap:.6em;align-items:flex-start;margin:.2em 0 .8em}
 .station .st-no{flex:none;font-family:var(--sans);font-weight:700;font-size:.72em;color:#fff;background:var(--red);border-radius:8px;padding:.35em .6em;margin-top:.15em}
 .station .st-title{font-weight:700;line-height:1.45}
-.link-step{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:1px 9px;border-radius:999px;background:var(--chip);
+.link-step{display:inline-flex;align-items:center;gap:4px;margin:2px 0 2px 6px;padding:8px 12px;border-radius:999px;background:var(--chip);
   font-family:var(--sans);font-size:.7em;color:var(--accent);font-weight:700;vertical-align:middle}
 .steps{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:1em}
 .step{display:flex;gap:.7em;align-items:flex-start;padding:.7em .9em;border-top:1px solid var(--line);font-size:.92em;line-height:1.55;word-break:keep-all}
@@ -166,6 +168,23 @@ audio{width:100%;margin:8px 0 4px}
   opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1}
 @media (min-width:600px){ .cover-title{font-size:46px} }
+/* ---------- 모바일 최종 보정 ---------- */
+.row .t,.r-head h2,.h,.st-title,.today-card b,.step .tx,.mys span,.weekly .wt{word-break:keep-all;overflow-wrap:anywhere}
+.r-head h2{font-size:min(1.45em,30px)}
+.h{font-size:min(1.08em,25px)}
+@media (max-width:374px){
+  .topbar{gap:0;padding-left:4px;padding-right:4px}
+  .topbar h1{font-size:15.5px}
+  .icon-btn{width:34px;height:40px}
+  .txt-btn{min-width:32px;padding:0 4px;font-size:14px}
+  .wrap{padding-left:12px;padding-right:12px}
+  .reader{padding-left:14px;padding-right:14px}
+  .toc{margin:0 -14px;padding-left:14px;padding-right:14px}
+  .row{padding:14px 12px;gap:10px}
+  .row .t{font-size:15.5px}
+  .logo-wrap::before{width:250px;height:250px}
+}
+
 </style>
 </head>
 <body>
@@ -404,7 +423,7 @@ function renderItem(it){
   const prev = all[idx-1], next = all[idx+1];
   h += `<div class="pager">${prev?`<button onclick="go('#/p/${prev.id}')"><small>‹ 이전</small>${esc(prev.title)}</button>`:"<span style='flex:1'></span>"}
         ${next?`<button class="next" onclick="go('#/p/${next.id}')"><small>다음 ›</small>${esc(next.title)}</button>`:"<span style='flex:1'></span>"}</div>`;
-  h += `<div style="text-align:center;margin-top:18px;font-family:var(--sans);font-size:12px"><a href="${esc(it.source)}" target="_blank" rel="noopener" style="color:var(--muted)">원문 보기 ↗</a></div></article>`;
+  h += `<div style="text-align:center;margin-top:18px;font-family:var(--sans);font-size:12px"><a href="${esc(it.source)}" target="_blank" rel="noopener" style="color:var(--muted);display:inline-block;padding:10px 16px">원문 보기 ↗</a></div></article>`;
   $("#view").innerHTML = h;
 }
 
