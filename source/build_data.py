@@ -122,6 +122,16 @@ common = [
  {"id": "creed", "title": "사도신경", "text": "전능하신 천주 성부 천지의 창조주를 저는 믿나이다. 그 외아들 우리 주 예수 그리스도님, 성령으로 인하여 동정 마리아께 잉태되어 나시고, 본시오 빌라도 통치 아래서 고난을 받으시고, 십자가에 못박혀 돌아가시고 묻히셨으며, 저승에 가시어 사흗날에 죽은 이들 가운데서 부활하시고, 하늘에 올라 전능하신 천주 성부 오른편에 앉으시며, 그리로부터 산 이와 죽은 이를 심판하러 오시리라 믿나이다. 성령을 믿으며, 거룩하고 보편된 교회와 모든 성인의 통공을 믿으며, 죄의 용서와 육신의 부활을 믿으며 영원한 삶을 믿나이다. 아멘."},
 ]
 
+# 길잡이 책자 95~106쪽 기도문 (역할 표시 포함) — source/common_prayers_extra.txt
+extra = SRC.parent / "common_prayers_extra.txt"
+if extra.exists():
+    for chunk in extra.read_text(encoding="utf-8").split("@@ ")[1:]:
+        ls = chunk.split("\n")
+        pid, ttl, pg = ls[0].strip().split("|")
+        bl = parse(ls[1:])
+        common.append({"id": pid, "title": ttl, "page": (int(pg) if pg.isdigit() else None), "blocks": bl,
+                       "text": " ".join(b["text"] for b in bl if b["type"] == "line")})
+
 songs = [
  {"id": "de-colores",  "title": "데 꼴로레스",   "page": 108, "use": "울뜨레야 마침성가",
   "sheet": "https://imdong.or.kr/m/music/sheet/de_colores.jpg",  "audio": "https://imdong.or.kr/m/music/de_colores.mp3",  "source": "https://imdong.or.kr/m/gj_de_colores01.html"},
