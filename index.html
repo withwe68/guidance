@@ -58,7 +58,7 @@ a{color:inherit;text-decoration:none}
 .cover-btn{margin-top:30px;padding:15px 34px;border-radius:999px;background:#fff;color:var(--navy-deep);
   font-weight:700;font-size:17px;box-shadow:0 8px 22px rgba(0,0,0,.3)}
 .cover-btn:active{transform:scale(.97)}
-.cover-foot{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;font-size:12.5px;color:#9fb0d8;letter-spacing:.05em}
+.cover-foot{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;font-family:var(--serif);font-weight:600;font-size:15.2px;color:#b7c4e6;letter-spacing:.08em}
 
 /* ---------- 공통 상단바 ---------- */
 .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:6px;
@@ -197,7 +197,7 @@ audio{width:100%;margin:8px 0 4px}
   <div class="cover-rule"></div>
   <p class="cover-date" id="coverDate"></p>
   <button class="cover-btn" onclick="go('#/menu')">길잡이 펼치기 →</button>
-  <div class="cover-foot">연희동 남성울뜨레야 · DE COLORES</div>
+  <div class="cover-foot">연희동 남성울뜨레야</div>
 </section>
 
 <!-- 앱 화면 -->
@@ -327,8 +327,7 @@ function renderMenu(){
   }
   html += `</div><div class="sec-title">기도문 기호</div>
     <div class="legend"><span><b class="who-L">十</b> 주례·선창</span><span><b class="who-A">◎</b> 다같이</span>
-    <span><b class="who-1">○</b> 왼편(1그룹)</span><span><b class="who-2">●</b> 오른편(2그룹)</span></div>
-    <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:28px">자료 출처 · 광주대교구 꾸르실료사무국 모바일 길잡이</p></div>`;
+    <span><b class="who-1">○</b> 왼편(1그룹)</span><span><b class="who-2">●</b> 오른편(2그룹)</span></div></div>`;
   $("#view").innerHTML = html;
 }
 
