@@ -8,6 +8,7 @@
   L| A| 1| 2|  : 역할 — L=주례(十/†), A=다같이(◎), 1=○편, 2=●편
   *라벨|본문   : 묵주기도 신비(단)
   %처|제목|묵상기도[|지시] : 십자가의 길 각 처
+  $경로|설명  : 이미지(악보)
   !WEEKLY      : 요일별 독서 삽입 위치
   접두어 없는 줄 : 앞 화자 계속(continuation) 또는 일반 문단
 """
@@ -40,10 +41,11 @@ META = {
  "gj_cur_pray002": ("rosary",    "기도",     "묵주기도",                 18),
  "gj_cur_pray003": ("evening",   "기도",     "저녁기도와 양심성찰",       25),
  "gj_cur_pray005": ("cursillista-prayer","기도","꾸르실리스따의 기도",   101),
- "gj_cur_medi01":  ("meditation","묵상·십자가의 길","묵상",              14),
+ "gj_cur_medi01":  ("meditation","묵상·십자가의 길","묵상",              13),
  "gj_cur_pray004": ("stations",  "묵상·십자가의 길","십자가의 길 (꾸르실리스따용)", 66),
- "gj_cur_sado":    ("apostle-hour","사도의 시간·성찰","사도의 시간",      28),
- "gj_cur_refl01":  ("reflection","사도의 시간·성찰","꾸르실리스따의 성찰", 89),
+ "gj_cur_sado":    ("apostle-hour","성체강복 · 사도의 시간","사도의 시간",      28),
+ "gj_benediction": ("benediction","성체강복 · 사도의 시간","성체강복",       39),
+ "gj_cur_refl01":  ("reflection","성체강복 · 사도의 시간","꾸르실리스따의 성찰", 89),
  "gj_cur_meeting": ("ultreya",   "회합",     "울뜨레야 순서",            None),
  "gj_cur_team":    ("team",      "회합",     "팀 회합",                  None),
  "gj_cur_sunle_s": ("pilgrim-start","순례기도·연도","순례의 길을 떠나면서 바치는 기도", None),
@@ -64,6 +66,12 @@ def parse(lines):
         if c == "#": blocks.append({"type": "rubric", "text": ln[1:].strip()}); last=None; continue
         if c == "~": blocks.append({"type": "note", "text": ln[1:].strip()}); last=None; continue
         if c == ">": blocks.append({"type": "quote", "text": ln[1:].strip()}); last=None; continue
+        if c == "^":                       # 절(①②…) — 새 블록으로 시작, 다음 줄은 이어 붙임
+            blk = {"type": "line", "role": None, "text": [ln[1:]]}
+            blocks.append(blk); last = blk; continue
+        if c == "$":                       # 악보 이미지: $경로|설명
+            src, _, cap = ln[1:].partition("|")
+            blocks.append({"type": "image", "src": src, "caption": cap}); last=None; continue
         if c == "*":
             lab, txt = ln[1:].split("|", 1)
             blocks.append({"type": "mystery", "label": lab, "text": txt}); last=None; continue
@@ -102,7 +110,7 @@ for chunk in raw.split("@@ ")[1:]:
         continue
     iid, cat, ttl, page = META[key]
     items.append({"id": iid, "category": cat, "title": ttl, "page": page,
-                  "source": f"https://imdong.or.kr/m/{key}.html", "blocks": parse(lines[2:])})
+                  "source": (None if key == "gj_benediction" else f"https://imdong.or.kr/m/{key}.html"), "blocks": parse(lines[2:])})
 
 # 길잡이에서 '(성모송)' 등으로만 표기된 공통기도 — 사이트에 본문 없음 → 보충 (책자 대조 필요)
 common = [
@@ -126,6 +134,7 @@ songs = [
 ]
 
 links = [
+ {"title": "가톨릭 주요기도문", "url": "#/prayers"},
  {"title": "오늘의 미사 (굿뉴스)", "url": "https://maria.catholic.or.kr/mobile/missa/missa_view.asp?today=on"},
 ]
 
@@ -133,7 +142,7 @@ data = {
  "meta": {"title": "꾸르실료 길잡이", "publisher": "광주대교구 꾸르실료사무국",
           "source": "https://imdong.or.kr/m/gj_cur_menu.html", "collected": "2026-10-11",
           "roles": {"L": "十 주례/선창", "A": "◎ 다같이", "1": "○ 왼편(1그룹)", "2": "● 오른편(2그룹)"}},
- "categories": ["기도", "묵상·십자가의 길", "사도의 시간·성찰", "회합", "순례기도·연도"],
+ "categories": ["기도", "묵상·십자가의 길", "성체강복 · 사도의 시간", "회합", "순례기도·연도"],
  "items": items, "weeklyReadings": [weekly[i] for i in range(7)],
  "commonPrayers": common, "songs": songs, "links": links, "fixesApplied": applied,
 }

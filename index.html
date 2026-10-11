@@ -49,7 +49,9 @@ a{color:inherit;text-decoration:none}
 .logo-wrap{position:relative;display:grid;place-items:center}
 .logo-wrap::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;
   background:radial-gradient(circle,rgba(120,160,255,.28) 0%,rgba(120,160,255,.08) 45%,transparent 70%);pointer-events:none}
-.logo-wrap img{position:relative;width:min(230px,62vw);height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.45))}
+.logo-wrap .bg-outline{position:absolute;left:50%;top:50%;width:min(620px,175vw);max-width:none;height:auto;transform:translate(-50%,-47%);
+  opacity:.13;filter:blur(.6px);pointer-events:none;z-index:0}
+.logo-wrap img.main{position:relative;z-index:1;width:min(230px,62vw);height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.45))}
 .cover-kicker{margin:34px 0 4px;font-family:var(--serif);font-size:19px;letter-spacing:.12em;color:#dfe7ff}
 .cover-title{margin:0;font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.25;letter-spacing:.02em}
 .cover-title span{display:block;font-size:24px;font-weight:600;letter-spacing:.3em;margin-top:6px;color:var(--gold)}
@@ -93,6 +95,12 @@ a{color:inherit;text-decoration:none}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 
 /* ---------- 읽기 화면 ---------- */
+.sheet{margin:14px 0;text-align:center}
+.sheet img{width:100%;height:auto;background:#fff;border:1px solid var(--line,#ccc);border-radius:6px;cursor:zoom-in}
+.sheet figcaption{font-size:.78em;opacity:.65;margin-top:4px}
+#zoom{position:fixed;inset:0;z-index:99;background:#000;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+#zoom img{display:block;width:230%;max-width:none;background:#fff}
+#zoom button{position:fixed;top:10px;right:10px;z-index:100;min-width:48px;min-height:48px;border:0;border-radius:24px;background:#fff;color:#000;font-size:18px}
 .reader{max-width:720px;margin:0 auto;padding:6px 18px calc(56px + env(safe-area-inset-bottom));font-family:var(--serif);font-size:var(--fs)}
 .r-head{text-align:center;padding:22px 0 10px}
 .r-head h2{margin:0;font-size:1.45em;font-weight:700;line-height:1.35}
@@ -149,6 +157,8 @@ a{color:inherit;text-decoration:none}
 .step:first-child{border-top:0}
 .step .sn{flex:none;width:1.75em;height:1.75em;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--sans);font-size:.72em;font-weight:700;margin-top:.1em}
 .weekly{scroll-margin-top:130px}
+.pr summary{font-size:.95em}
+.pr-tx{padding:0 1.1em 1.1em;line-height:1.85;word-break:keep-all}
 .end-mark{text-align:center;color:var(--gold);margin:2.2em 0 0;font-size:1.2em;letter-spacing:.6em}
 .pager{display:flex;gap:10px;margin-top:22px;font-family:var(--sans)}
 .pager button{flex:1;padding:13px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;text-align:left}
@@ -191,7 +201,7 @@ audio{width:100%;margin:8px 0 4px}
 
 <!-- 표지 -->
 <section id="cover">
-  <div class="logo-wrap"><img src="images/logo.png" alt="꾸르실료 로고"></div>
+  <div class="logo-wrap"><img class="bg-outline" src="images/yeonhui-outline.png" alt="" aria-hidden="true"><img class="main" src="images/logo.png" alt="꾸르실료 로고"></div>
   <p class="cover-kicker">그리스도인 생활의</p>
   <h1 class="cover-title">꾸르실료<span>길 잡 이</span></h1>
   <div class="cover-rule"></div>
@@ -223,7 +233,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const DAYS = ["일","월","화","수","목","금","토"];
 const ROLE_MARK = {L:"十", A:"◎", "1":"○", "2":"●"};
-const ICON = {"기도":"✚","묵상·십자가의 길":"✝","사도의 시간·성찰":"♔","회합":"◎","순례기도·연도":"⛪"};
+const ICON = {"기도":"✚","묵상·십자가의 길":"✝","성체강복 · 사도의 시간":"♔","회합":"◎","순례기도·연도":"⛪"};
 const store = {
   get(k,d){ try{ const v = localStorage.getItem("gj_"+k); return v===null? d : JSON.parse(v);}catch(e){return d;} },
   set(k,v){ try{ localStorage.setItem("gj_"+k, JSON.stringify(v)); }catch(e){} }
@@ -279,6 +289,7 @@ function route(){
   if(page==="menu") renderMenu();
   else if(page==="p" && itemById(id)) renderItem(itemById(id));
   else if(page==="song") renderSong(D.songs.find(s=>s.id===id));
+  else if(page==="prayers") renderPrayers();
   else renderMenu();
   if(!(page==="menu" && store.get("menuScroll",0))) window.scrollTo(0,0);
 }
@@ -322,8 +333,9 @@ function renderMenu(){
   }
   html += `</div><div class="sec-title">바로가기</div><div class="list">`;
   for(const l of D.links){
+    const internal = l.url.startsWith("#");
     const ext = /^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : "";
-    html += `<a class="row" href="${esc(l.url)}"${ext}><span class="ico">↗</span><span class="t">${esc(l.title)}</span><span class="chev">›</span></a>`;
+    html += `<a class="row" href="${esc(l.url)}"${ext}><span class="ico">${internal?"✚":"↗"}</span><span class="t">${esc(l.title)}</span><span class="chev">›</span></a>`;
   }
   html += `</div><div class="sec-title">기도문 기호</div>
     <div class="legend"><span><b class="who-L">十</b> 주례·선창</span><span><b class="who-A">◎</b> 다같이</span>
@@ -401,6 +413,7 @@ function renderItem(it){
       case "rubric": h += `<div class="blk rubric">${esc(b.text)}</div>`; break;
       case "note":   h += noteHtml(b.text); break;
       case "quote":  h += `<div class="blk quote">${esc(b.text)}</div>`; break;
+      case "image":  h += `<figure class="blk sheet"><img src="${esc(b.src)}" alt="${esc(b.caption)}" loading="lazy" data-zoom><figcaption>${esc(b.caption)} · 누르면 크게 보기</figcaption></figure>`; break;
       case "weekly": h += weeklyHtml(today.getDay()); break;
       case "mystery":h += `<div class="blk mys"><span class="n">${esc(b.label)}</span><span>${esc(b.text)}</span></div>`; break;
       case "station":h += stationHtml(b); break;
@@ -422,10 +435,18 @@ function renderItem(it){
   const prev = all[idx-1], next = all[idx+1];
   h += `<div class="pager">${prev?`<button onclick="go('#/p/${prev.id}')"><small>‹ 이전</small>${esc(prev.title)}</button>`:"<span style='flex:1'></span>"}
         ${next?`<button class="next" onclick="go('#/p/${next.id}')"><small>다음 ›</small>${esc(next.title)}</button>`:"<span style='flex:1'></span>"}</div>`;
-  h += `<div style="text-align:center;margin-top:18px;font-family:var(--sans);font-size:12px"><a href="${esc(it.source)}" target="_blank" rel="noopener" style="color:var(--muted);display:inline-block;padding:10px 16px">원문 보기 ↗</a></div></article>`;
+  h += `<div style="text-align:center;margin-top:18px;font-family:var(--sans);font-size:12px">${it.source?`<a href="${esc(it.source)}" target="_blank" rel="noopener" style="color:var(--muted);display:inline-block;padding:10px 16px">원문 보기 ↗</a>`:""}</div></article>`;
   $("#view").innerHTML = h;
 }
 
+function renderPrayers(){
+  $("#barTitle").innerHTML = "가톨릭 주요기도문";
+  let h = `<article class="reader"><div class="r-head"><h2>가톨릭 주요기도문</h2><div class="meta">제목을 누르면 기도문이 펼쳐집니다</div></div>`;
+  h += D.commonPrayers.map((p,i)=>`<details class="guide pr" ${i===0?"open":""}><summary>${esc(p.title)}</summary>
+    <div class="pr-tx">${esc(p.text)}</div></details>`).join("");
+  h += `<div class="end-mark">✚</div></article>`;
+  $("#view").innerHTML = h;
+}
 function renderSong(s){
   if(!s){ renderMenu(); return; }
   $("#barTitle").innerHTML = esc(s.title);
@@ -460,6 +481,14 @@ $("#view").addEventListener("click", e => {
 
 route();
 })();
+</script>
+<script>
+document.addEventListener("click",function(e){
+  var im=e.target.closest&&e.target.closest("img[data-zoom]"); if(!im) return;
+  var z=document.createElement("div"); z.id="zoom";
+  z.innerHTML='<button type="button">닫기 ✕</button><img src="'+im.getAttribute("src")+'" alt="">';
+  z.addEventListener("click",function(){z.remove();}); document.body.appendChild(z);
+});
 </script>
 </body>
 </html>
