@@ -373,14 +373,17 @@ function weeklyHtml(sel){
   return `<div class="weekly" id="weekly"><div class="days">${DAYS.map((d,i)=>`<button data-day="${i}" class="${i===sel?"sel":""}">${d}${i===today.getDay()?"·":""}</button>`).join("")}</div>
     <div class="ref">${esc(w.day)} 독서 · ${esc(w.ref)}</div><div class="wt">${esc(w.text)}</div></div>`;
 }
-function stationHtml(b){
+function stationHtml(b, it){
+  // 가톨릭 기도서 '십자가의 길'은 묵상기도가 '구세주 예수님,'으로 시작해 '사랑하는 예수님,' 머리말을 붙이지 않음
+  const book = it.id==="stations-book";
   return `<div class="card station" id="st-${b.no}">
-    ${lineHtml("A","어머니께 청하오니\n제 맘속에 주님 상처 깊이 새겨주소서.")}
+    ${book?`<div class="blk rubric">제${b.no}처로 가며</div>`:""}
+    ${lineHtml("A","어머니께 청하오니,\n제 맘속에 주님 상처 깊이 새겨 주소서.")}
     <div class="st-head"><span class="st-no">제${b.no}처</span><span class="st-title">${esc(b.title)}</span></div>
     ${lineHtml("L","주님께서는 십자가로 온 세상을 구원하셨나이다.")}
     <div class="blk line r-A"><span class="who who-A">◎</span><span class="tx">예수 그리스도님, <span class="rubric">깊은 절을 하며</span>\n경배하며 찬송하나이다.</span></div>
     ${b.rubric?`<div class="blk rubric">${esc(b.rubric)}</div>`:""}
-    ${lineHtml(null,"사랑하는 예수님,\n"+b.prayer)}
+    ${book?lineHtml(null,b.prayer):lineHtml(null,"사랑하는 예수님,\n"+b.prayer)}
     <div class="blk rubric">잠깐 묵상한다.</div>
     ${noteHtml("주님의 기도, 성모송, 영광송")}
   </div>`;
@@ -420,7 +423,7 @@ function renderItem(it){
       case "image":  h += `<figure class="blk sheet"><img src="${esc(b.src)}" alt="${esc(b.caption)}" loading="lazy" data-zoom><figcaption>${esc(b.caption)} · 누르면 크게 보기</figcaption></figure>`; break;
       case "weekly": h += weeklyHtml(today.getDay()); break;
       case "mystery":h += `<div class="blk mys"><span class="n">${esc(b.label)}</span><span>${esc(b.text)}</span></div>`; break;
-      case "station":h += stationHtml(b); break;
+      case "station":h += stationHtml(b, it); break;
       case "line": {
         if(it.id==="ultreya" && !b.role){
           h += `<div class="steps">` + b.text.split("\n").map(ln => {

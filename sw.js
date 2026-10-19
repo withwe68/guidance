@@ -2,7 +2,7 @@
  * 내용(기도문·index.html 등)을 고쳐 올릴 때마다 VERSION 숫자만 올리면
  * 사용자 휴대폰에 새 버전이 자동으로 설치됩니다.
  */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE_APP = 'gj-app-' + VERSION;      // 앱 본체(필수 파일)
 const CACHE_SHEET = 'gj-sheet';             // 성가 악보 이미지(버전과 무관하게 유지)
 const CACHE_FONT = 'gj-font';               // 구글 웹폰트(한 번 본 글자 조각만 저장)
