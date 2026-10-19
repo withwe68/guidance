@@ -715,7 +715,7 @@ window.GUIDE_DATA = {
    "id": "stations-book",
    "category": "묵상·십자가의 길",
    "title": "십자가의 길",
-   "page": null,
+   "page": 51,
    "source": null,
    "blocks": [
     {
