@@ -1229,7 +1229,7 @@ window.GUIDE_DATA = {
     },
     {
      "type": "image",
-     "src": "images/sheet-podo.jpg",
+     "src": "images/sheet-podo.jpg?v=2",
      "caption": "나는 포도나무요 악보 (132쪽)"
     },
     {
@@ -1454,7 +1454,7 @@ window.GUIDE_DATA = {
     },
     {
      "type": "image",
-     "src": "images/sheet-gwonneung.jpg",
+     "src": "images/sheet-gwonneung.jpg?v=2",
      "caption": "주 천주의 권능과 악보 (145쪽)"
     },
     {
