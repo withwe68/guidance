@@ -7,7 +7,7 @@
   >텍스트      : 인용(성경 구절)
   L| A| 1| 2|  : 역할 — L=주례(十/†), A=다같이(◎), 1=○편, 2=●편
   *라벨|본문   : 묵주기도 신비(단)
-  %처|제목|묵상기도[|지시] : 십자가의 길 각 처
+  %처|제목|묵상기도[|지시] : 십자가의 길 각 처 (다음 줄부터 접두어 없는 줄은 묵상기도 다음 문단)
   $경로|설명  : 이미지(악보)
   !WEEKLY      : 요일별 독서 삽입 위치
   접두어 없는 줄 : 앞 화자 계속(continuation) 또는 일반 문단
@@ -42,6 +42,7 @@ META = {
  "gj_cur_pray003": ("evening",   "기도",     "저녁기도와 양심성찰",       25),
  "gj_cur_pray005": ("cursillista-prayer","기도","꾸르실리스따의 기도",   101),
  "gj_cur_medi01":  ("meditation","묵상·십자가의 길","묵상",              13),
+ "gj_stations_book": ("stations-book","묵상·십자가의 길","십자가의 길",              51),
  "gj_cur_pray004": ("stations",  "묵상·십자가의 길","십자가의 길 (꾸르실리스따용)", 66),
  "gj_cur_sado":    ("apostle-hour","성체강복 · 사도의 시간","사도의 시간",      28),
  "gj_benediction": ("benediction","성체강복 · 사도의 시간","성체강복",       39),
@@ -79,12 +80,14 @@ def parse(lines):
             parts = ln[1:].split("|")
             st = {"type": "station", "no": int(parts[0]), "title": parts[1], "prayer": parts[2]}
             if len(parts) > 3: st["rubric"] = parts[3]
-            blocks.append(st); last=None; continue
+            blocks.append(st); last=st; continue
         m = re.match(r"^([LA12])\|(.*)$", ln)
         if m:
             b = {"type": "line", "role": m.group(1), "text": [m.group(2)]}
             blocks.append(b); last = b; continue
-        if last is not None:
+        if last is not None and last["type"] == "station":
+            last["prayer"] += "\n" + ln       # 묵상기도 다음 문단
+        elif last is not None:
             last["text"].append(ln)          # 같은 화자 계속
         else:
             b = {"type": "line", "role": None, "text": [ln]}
@@ -110,7 +113,7 @@ for chunk in raw.split("@@ ")[1:]:
         continue
     iid, cat, ttl, page = META[key]
     items.append({"id": iid, "category": cat, "title": ttl, "page": page,
-                  "source": (None if key == "gj_benediction" else f"https://imdong.or.kr/m/{key}.html"), "blocks": parse(lines[2:])})
+                  "source": (None if key in ("gj_benediction", "gj_stations_book") else f"https://imdong.or.kr/m/{key}.html"), "blocks": parse(lines[2:])})
 
 # 길잡이에서 '(성모송)' 등으로만 표기된 공통기도 — 사이트에 본문 없음 → 보충 (책자 대조 필요)
 common = [
