@@ -371,7 +371,7 @@ function weeklyHtml(sel){
     <div class="ref">${esc(w.day)} 독서 · ${esc(w.ref)}</div><div class="wt">${esc(w.text)}</div></div>`;
 }
 function stationHtml(b, it){
-  // 길잡이 51쪽 '십자가의 길'은 처마다 묵상기도 본문이 완결돼 있어 '사랑하는 예수님,' 머리말·잠깐 묵상 지시를 붙이지 않음
+  // 가톨릭 기도서 '십자가의 길'은 묵상기도가 '구세주 예수님,'으로 시작해 '사랑하는 예수님,' 머리말을 붙이지 않음
   const book = it.id==="stations-book";
   return `<div class="card station" id="st-${b.no}">
     ${book?`<div class="blk rubric">제${b.no}처로 가며</div>`:""}
@@ -381,7 +381,7 @@ function stationHtml(b, it){
     <div class="blk line r-A"><span class="who who-A">◎</span><span class="tx">예수 그리스도님, <span class="rubric">깊은 절을 하며</span>\n경배하며 찬송하나이다.</span></div>
     ${b.rubric?`<div class="blk rubric">${esc(b.rubric)}</div>`:""}
     ${book?lineHtml(null,b.prayer):lineHtml(null,"사랑하는 예수님,\n"+b.prayer)}
-    ${book?"":`<div class="blk rubric">잠깐 묵상한다.</div>`}
+    <div class="blk rubric">잠깐 묵상한다.</div>
     ${noteHtml("주님의 기도, 성모송, 영광송")}
   </div>`;
 }

@@ -42,7 +42,7 @@ META = {
  "gj_cur_pray003": ("evening",   "기도",     "저녁기도와 양심성찰",       25),
  "gj_cur_pray005": ("cursillista-prayer","기도","꾸르실리스따의 기도",   101),
  "gj_cur_medi01":  ("meditation","묵상·십자가의 길","묵상",              13),
- "gj_stations_book": ("stations-book","묵상·십자가의 길","십자가의 길",              51),
+ "gj_stations_book": ("stations-book","묵상·십자가의 길","십자가의 길",              None),
  "gj_cur_pray004": ("stations",  "묵상·십자가의 길","십자가의 길 (꾸르실리스따용)", 66),
  "gj_cur_sado":    ("apostle-hour","성체강복 · 사도의 시간","사도의 시간",      28),
  "gj_benediction": ("benediction","성체강복 · 사도의 시간","성체강복",       39),
